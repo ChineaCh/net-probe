@@ -48,8 +48,8 @@
     and 'Plain_Text', matched case-insensitively (e.g. 'cmtrace' or
     'PLAIN_TEXT' are accepted). 'CMTrace' writes canonical CMTrace-format log
     lines; 'Plain_Text' writes each log line identical to its console line.
-    Defaults to 'CMTrace' when not supplied, preserving existing behavior. The
-    console output is unaffected by this parameter.
+    Defaults to 'Plain_Text' when not supplied. The console output is
+    unaffected by this parameter.
 
 .PARAMETER ProbeMode
     Optional probing method for the run. Accepted values are 'ICMP' and 'TCP',
@@ -74,13 +74,13 @@
     .\Net-Probe.ps1 -ProbeTarget 'example.com'
 
     Runs the default ICMP probe against example.com every 5 seconds, logging in
-    CMTrace format to %LOCALAPPDATA%\pwshNetProbeLogs.
+    Plain_Text format to %LOCALAPPDATA%\pwshNetProbeLogs.
 
 .EXAMPLE
-    .\Net-Probe.ps1 -ProbeTarget '10.0.0.5' -ProbeIntervalSeconds 10 -LogFormat Plain_Text
+    .\Net-Probe.ps1 -ProbeTarget '10.0.0.5' -ProbeIntervalSeconds 10 -LogFormat CMTrace
 
-    Runs ICMP probes every 10 seconds and writes plain-text log lines identical
-    to the console output.
+    Runs ICMP probes every 10 seconds and writes canonical CMTrace-format log
+    lines instead of the default plain-text log lines.
 
 .EXAMPLE
     .\Net-Probe.ps1 -ProbeTarget 'example.com' -ProbeMode TCP
@@ -375,9 +375,9 @@ function Test-LogFormat {
     )
 
     # Requirement 2.1: when the caller does not supply a log format ($null), use
-    # the Default_Log_Format of 'CMTrace'.
+    # the Default_Log_Format of 'Plain_Text'.
     if ($null -eq $LogFormat) {
-        return [pscustomobject]@{ IsValid = $true; Value = 'CMTrace'; Reason = '' }
+        return [pscustomobject]@{ IsValid = $true; Value = 'Plain_Text'; Reason = '' }
     }
 
     # A supplied value is coerced to its string form for the whitespace and
@@ -2059,7 +2059,7 @@ function Invoke-NetProbe {
     # ---- Step 3a: log format (Requirements 1.5, 1.6, 2.1, 2.3) ---------------
 
     # Distinguish "not supplied at all" from "supplied empty/whitespace":
-    #   - Not supplied  -> default to the Default_Log_Format 'CMTrace'
+    #   - Not supplied  -> default to the Default_Log_Format 'Plain_Text'
     #                      (Test-LogFormat $null).
     #   - Supplied      -> validate the given value; empty/whitespace or any
     #                      non-member token is invalid (Requirements 1.5, 1.6).
@@ -2086,7 +2086,7 @@ function Invoke-NetProbe {
     # If it is not, terminate the run before any probe rather than proceed with
     # an unset log format.
     if ($logFormatValue -cne 'CMTrace' -and $logFormatValue -cne 'Plain_Text') {
-        Write-Error "Could not default log format to 'CMTrace'; resolved value '$logFormatValue' is not a recognized log format."
+        Write-Error "Could not default log format to 'Plain_Text'; resolved value '$logFormatValue' is not a recognized log format."
         return
     }
 
