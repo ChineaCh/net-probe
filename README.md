@@ -10,7 +10,7 @@ per-run log file.
   (connect attempts against one or more ports; reachable if any port accepts
   a connection).
 - **Configurable interval, timeout, and log folder.**
-- **Two log formats**: `CMTrace` (default) or `Plain_Text`.
+- **Two log formats**: `Plain_Text` (default) or `CMTrace`.
 - Runs until interrupted with `Ctrl+C`, or the `Q` key in an interactive
   session.
 
@@ -21,11 +21,11 @@ Windows PowerShell 5.1 or PowerShell 7+.
 ## Usage
 
 ```powershell
-# Default ICMP probe, every 5 seconds
+# Default ICMP probe, every 5 seconds, plain-text log
 .\Net-Probe.ps1 -ProbeTarget 'example.com'
 
-# ICMP probe every 10 seconds, plain-text log
-.\Net-Probe.ps1 -ProbeTarget '10.0.0.5' -ProbeIntervalSeconds 10 -LogFormat Plain_Text
+# ICMP probe every 10 seconds, CMTrace-format log
+.\Net-Probe.ps1 -ProbeTarget '10.0.0.5' -ProbeIntervalSeconds 10 -LogFormat CMTrace
 
 # TCP probe against the default HTTPS port (443)
 .\Net-Probe.ps1 -ProbeTarget 'example.com' -ProbeMode TCP
