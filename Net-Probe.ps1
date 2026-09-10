@@ -115,6 +115,7 @@ param(
     [string] $LogFormat,
 
     [Parameter()]
+    [ValidateSet('ICMP', 'TCP')]
     [string] $ProbeMode,
 
     [Parameter()]
